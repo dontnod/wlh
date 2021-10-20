@@ -1,19 +1,19 @@
-import { Backend } from './backend'
+import { Api } from './api'
 import { Method } from 'axios'
 
 type ApiResponse<TResponse> = TResponse | Record<string, string>
 
 export abstract class Resource {
-  constructor(url: string, backend: Backend) {
+  constructor(url: string, api: Api) {
     this._url = url
-    this._backend = backend
+    this._api = api
   }
 
   get error() { return this._error }
   get fieldsErrors() { return this._fieldsErrors }
   get loading() { return this._loading }
 
-  protected get backend() { return this._backend }
+  protected get api() { return this._api }
 
   resetErrors() {
     this._error = ""
@@ -36,10 +36,9 @@ export abstract class Resource {
     await this._query<void, void>('GET', undefined)
   }
 
-  // TODO : Pass this private
   protected async _query<TResponse, TData>(method: Method, data: TData) {
     this._loading = true
-    let response = await this._backend.query<ApiResponse<TResponse>>(this._url, method, data)
+    let response = await this._api.query<ApiResponse<TResponse>>(this._url, method, data)
     this._loading = false
 
     if(!response) {
@@ -64,7 +63,7 @@ export abstract class Resource {
     }
   }
 
-  private _backend: Backend
+  private _api: Api
   private _error: string | undefined
   private _fieldsErrors: Record<string, string[]> = {}
   private _loading: boolean = false;

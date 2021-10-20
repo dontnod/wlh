@@ -20,10 +20,21 @@ const _AUTHORIZATION_HEADER_KEY = 'Authorization'
  */
 export type ApiErrorHandler = (status: number, message: string) => void
 
+
+/**
+ * Api data for an object, with fields and fields values.
+ */
+export type ApiObjectData = Record<string, any>
+
+/**
+ * Data for an array.
+ */
+export type ApiArrayData = any[]
+
 /**
  * Type describing json data returned by a query to the API
  */
-export type ApiData = Record<string, any> | any[] | undefined
+export type ApiData = ApiObjectData | ApiArrayData | undefined
 
 /**
  * Api response aggregating the eventually returned data, and an error code.

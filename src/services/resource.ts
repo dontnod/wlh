@@ -36,7 +36,8 @@ export abstract class Resource {
     await this._query<void, void>('GET', undefined)
   }
 
-  private async _query<TResponse, TData>(method: Method, data: TData) {
+  // TODO : Pass this private
+  protected async _query<TResponse, TData>(method: Method, data: TData) {
     this._loading = true
     let response = await this._backend.query<ApiResponse<TResponse>>(this._url, method, data)
     this._loading = false

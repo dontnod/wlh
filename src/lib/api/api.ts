@@ -8,9 +8,9 @@ import { getService } from '../common/service-manager'
 const _AUTH_TOKEN_STORAGE_KEY = 'wlh_auth_token'
 const _AUTHORIZATION_HEADER_KEY = 'Authorization'
 
-type ResourceConstructor<TResource extends Resource> = { new(url: string, backend: Backend) : TResource }
+type ResourceConstructor<TResource extends Resource> = { new(url: string, api: Api) : TResource }
 
-export class Backend {
+export class Api {
   constructor() {
     this._instance = axios.create({
       baseURL: '/api',
@@ -31,7 +31,7 @@ export class Backend {
       }
     }
 
-    let resource = new constructor(url, this._backend) as TResource
+    let resource = new constructor(url, this._api) as TResource
     this._resources[url] = new WeakRef(resource)
     return resource
   }
@@ -82,13 +82,13 @@ export class Backend {
   private _resources: Record<string, WeakRef<Resource>> = {}
 }
 
-const BackendKey : InjectionKey<Backend> = Symbol()
+const ApiKey : InjectionKey<Api> = Symbol()
 
-export function getBackend() {
-  return getService(BackendKey, Backend)
+export function getApi() {
+  return getService(ApiKey, Api)
 }
 
 export function getResource<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) {
-  const backend = getService(BackendKey, Backend)
-  return backend.get(constructor, url)
+  const api = getService(ApiKey, Api)
+  return api.get(constructor, url)
 }

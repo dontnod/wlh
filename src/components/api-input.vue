@@ -7,7 +7,7 @@ c-input(:errors="errors" @change="onChange()")
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { computed } from 'vue'
-import { getCurrentResource } from '@ciukune/ckc'
+import { getCurrentResource } from '@dontnod/wlh'
 import { IResourceObject } from '../services/resource-object'
 
 export default defineComponent({

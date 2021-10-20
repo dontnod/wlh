@@ -1,12 +1,12 @@
 {
-  "name": "@ciukune/ckc",
+  "name": "@dontnod/wlh",
   "version": "0.0.1",
-  "description": "Core components of ciukune UI",
+  "description": "Web library & helpers.",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "STJV",
+  "author": "Dontnod",
   "license": "WTFPL",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",

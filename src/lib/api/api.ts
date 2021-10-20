@@ -31,7 +31,7 @@ export class Api {
       }
     }
 
-    let resource = new constructor(url, this._api) as TResource
+    let resource = new constructor(url, this) as TResource
     this._resources[url] = new WeakRef(resource)
     return resource
   }

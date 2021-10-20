@@ -2,11 +2,18 @@ import axios from 'axios'
 import { AxiosInstance, Method } from 'axios'
 import { InjectionKey } from 'vue'
 import { Resource } from './resource'
-
+import { Signal } from '../common/signal'
 import { getService } from '../common/service-manager'
 
 const _AUTH_TOKEN_STORAGE_KEY = 'wlh_auth_token'
 const _AUTHORIZATION_HEADER_KEY = 'Authorization'
+
+export type ApiErrorHandler = (status: number, message: string) => void
+export type ApiData = Record<string, any> | any[] | undefined
+export interface ApiResponse {
+  status: number
+  data: ApiData | undefined
+}
 
 type ResourceConstructor<TResource extends Resource> = { new(url: string, api: Api) : TResource }
 
@@ -36,8 +43,8 @@ export class Api {
     return resource
   }
 
-  async query<TResponse>(url: string, method: Method, data: any) {
-    let response = await this._instance.request<TResponse>({
+  async query(url: string, method: Method, data: any) : Promise<ApiResponse> {
+    let response = await this._instance.request<ApiData>({
       data: data,
       method: method,
       url: url,
@@ -48,12 +55,18 @@ export class Api {
       xsrfHeaderName: 'X-CSRF-TOKEN',
     })
 
-    if(response.status >= 500) {
-      // TODO : Global error handling.
-      return undefined
+    if(response.status >= 400) {
+      this._onError.raise(response.status, response.statusText)
+      return {
+        status: response.status,
+        data: undefined
+      }
     }
   
-    return response
+    return {
+      status: response.status,
+      data: response.data
+    }
   }
   
   setToken(token: string) {
@@ -78,8 +91,9 @@ export class Api {
     }
   }
 
-  private _instance: AxiosInstance
-  private _resources: Record<string, WeakRef<Resource>> = {}
+  private readonly _instance: AxiosInstance
+  private readonly _onError = new Signal<ApiErrorHandler>()
+  private readonly _resources: Record<string, WeakRef<Resource>> = {}
 }
 
 const ApiKey : InjectionKey<Api> = Symbol()

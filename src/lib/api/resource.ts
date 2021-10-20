@@ -1,7 +1,8 @@
-import { Api } from './api'
+import { Api, ApiData, ApiResponse } from './api'
 import { Method } from 'axios'
+import { Signal } from '../common/signal'
 
-type ApiResponse<TResponse> = TResponse | Record<string, string>
+export type ResourceErrorHandler = (message: string, field: string | undefined) => void
 
 export abstract class Resource {
   constructor(url: string, api: Api) {
@@ -9,63 +10,51 @@ export abstract class Resource {
     this._api = api
   }
 
-  get error() { return this._error }
-  get fieldsErrors() { return this._fieldsErrors }
-  get loading() { return this._loading }
+  public get onError() { return this._onError }
 
   protected get api() { return this._api }
 
-  resetErrors() {
-    this._error = ""
-    this._fieldsErrors = {}
+  protected async _get() : Promise<ApiData> {
+    return await this._query('GET')
   }
 
-  protected async _get<TResponse>() : Promise<TResponse | undefined> {
-    return await this._query<TResponse, void>('GET', undefined)
+  protected async _patch<TData>(data: TData) : Promise<ApiData> {
+    return await this._query('PATCH', data)
   }
 
-  protected async _patch<TResponse, TData>(data: TData) : Promise<TResponse | undefined> {
-    return await this._query<TResponse, TData>('PATCH', data)
-  }
-
-  protected async _post<TResponse, TData>(data: TData) : Promise<TResponse | undefined> {
-    return await this._query<TResponse, TData>('POST', data)
+  protected async _post<TData>(data: TData) : Promise<ApiData> {
+    return await this._query('POST', data)
   }
 
   protected async _delete() : Promise<void> {
-    await this._query<void, void>('GET', undefined)
+    await this._query('DELETE')
   }
 
-  protected async _query<TResponse, TData>(method: Method, data: TData) {
-    this._loading = true
-    let response = await this._api.query<ApiResponse<TResponse>>(this._url, method, data)
-    this._loading = false
+  protected async _query<TData>(method: Method, queryData: TData | undefined = undefined) : Promise<ApiData | undefined> {
+    let { status, data } = await this._api.query(this._url, method, queryData)
 
-    if(!response) {
+    if(status >= 400) {
+      let errors = data as Record<string, string | string[]>
+      for(let key in errors) {
+        let errorData = errors[key]
+        if(key == 'detail') {
+          this._onError.raise(errorData as string, undefined)
+        }
+        else {
+          for(const message of errorData) {
+            this._onError.raise(message, key)
+          }
+        }
+      }
+
       return undefined
     }
 
-    this.resetErrors()
-
-    if(response.status < 400) {
-      return response.data as TResponse
-    }
-
-    let errors = response.data as Record<string, string | string[]>
-    for(let key in errors) {
-      let message = errors[key]
-      if(key == 'detail') {
-        this._error = message as string
-      }
-      else {
-        this._fieldsErrors[key] = message as string[]
-      }
-    }
+    console.assert(data != undefined)
+    return data
   }
 
-  private _api: Api
-  private _error: string | undefined
-  private _fieldsErrors: Record<string, string[]> = {}
-  private _loading: boolean = false;
-  private _url: string
+  private readonly _api: Api
+  private readonly _onError = new Signal<ResourceErrorHandler>()
+  private readonly _url: string
 }

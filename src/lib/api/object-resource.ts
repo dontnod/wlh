@@ -9,7 +9,7 @@ import { Signal } from '../common/signal'
 
 export type FieldChangedHandler = (object: Resource, field: string, oldValue: any, newValue: any) => void
 
-export class ResourceObject extends Resource {
+export class ObjectResource extends Resource {
   constructor(url: string, api: Api) {
     super(url, api)
     this._loadTask = this._load()

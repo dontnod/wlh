@@ -59,6 +59,6 @@ export default function install<T>(app: App<T>, options?: CkcOptions) {
 
 export { Api, getResource, getApi } from './lib/api/api'
 export { Resource } from './lib/api/resource'
-export { ResourceObject } from './lib/api/resource-object'
+export { ObjectResource } from './lib/api/object-resource'
 export { getCurrentResource } from './lib/api/current-resource'
 export { getService } from './lib/common/service-manager'

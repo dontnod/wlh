@@ -1,0 +1,46 @@
+/* Copyright © 2021 STJV contact@stjv.com
+
+  This work is free. You can redistribute it and/or modify it under the
+  terms of the Do What The Fuck You Want To Public License, Version 2,
+  as published by Sam Hocevar. See the COPYING file for more details.
+*/
+
+:root {
+  --muted-on-surface: rgba(var(--on-surface), 0.6);
+  --hint-on-surface: rgba(var(--on-surface), 0.1);
+
+  --muted-on-background: rgba(var(--on-surface), 0.6);
+  --hint-on-background: rgba(var(--on-surface), 0.4);
+
+  --border-color: rgba(var(--on-surface), 0.8);
+
+  --context-dark: var(--primary-dark);
+  --context-light: var(--primary-light);
+  --context: var(--background);
+  --on-context: var(--on-background);
+}
+
+.surface {
+  --context: var(--surface);
+  --on-context: var(--on-surface);
+  background-color: var(--surface);
+  color: var(--on-surface);
+}
+
+.primary {
+  --context-dark: var(--primary-dark);
+  --context-light: var(--primary-light);
+  --context: var(--primary);
+  --on-context: var(--on-primary);
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.secondary {
+  --context-dark: var(--secondary-dark);
+  --context-light: var(--secondary-light);
+  --context: var(--secondary);
+  --on-context: var(--on-secondary);
+  background-color: var(--secondary);
+  color: var(--on-secondary);
+}

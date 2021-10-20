@@ -1,0 +1,20 @@
+{
+  "name": "@ciukune/ckc",
+  "version": "0.0.1",
+  "description": "Core components of ciukune UI",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "STJV",
+  "license": "WTFPL",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "axios": "^0.21.1",
+    "include-media": "^1.4.10",
+    "pug": "^3.0.2",
+    "sass-loader": "^12.1.0",
+    "vue": "^3.1.1"
+  }
+}

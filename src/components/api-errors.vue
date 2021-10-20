@@ -4,9 +4,8 @@ div(class="control resource-errors" v-if="error") {{ error }}
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { computed } from 'vue'
-import { getCurrentResource } from '../services/current-resource'
+import { defineComponent, computed } from 'vue'
+import { getCurrentResource } from '../lib/api/current-resource'
 
 export default defineComponent({
   props: {

@@ -7,10 +7,9 @@ form
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
-import { Resource } from '../services/resource'
-import { defineComponent } from 'vue'
-import { setCurrentResource } from '../services/current-resource'
+import { PropType, defineComponent } from 'vue';
+import { Resource } from '../lib/api/resource'
+import { setCurrentResource } from '../lib/api/current-resource'
 
 export default defineComponent({
   props: {

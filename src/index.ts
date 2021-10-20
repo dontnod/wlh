@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { App } from 'vue'
 
 import './assets/styles/_index.scss'
-import './font-awesome'
+import './lib/ui/font-awesome'
 import './ckc.d.ts'
 import CApiErrors from './components/api-errors.vue'
 import CApiForm from './components/api-form.vue'
@@ -21,8 +21,8 @@ import CRouterLink from './components/router-link.vue'
 import CScreenCenter from './components/screen-center.vue'
 import CSpinner from './components/spinner.vue'
 import CTextField from './components/text-field.vue'
-import { MediaQueryOptions } from './services/media-query'
-import { mediaQuery } from './services/media-query'
+import { MediaQueryOptions } from './lib/ui/media-query'
+import { mediaQuery } from './lib/ui/media-query'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -57,10 +57,8 @@ export default function install<T>(app: App<T>, options?: CkcOptions) {
   app.config.globalProperties.$mq = mediaQuery(options?.mqOptions)
 }
 
-export { Backend } from './services/backend'
-export { Resource } from './services/resource'
-export { ResourceObject } from './services/resource-object'
-export { getBackend } from './services/backend'
-export { getCurrentResource } from './services/current-resource'
-export { getResource } from './services/resource-manager'
-export { getService } from './services/service-manager'
+export { Backend, getResource, getBackend } from './lib/api/backend'
+export { Resource } from './lib/api/resource'
+export { ResourceObject } from './lib/api/resource-object'
+export { getCurrentResource } from './lib/api/current-resource'
+export { getService } from './lib/common/service-manager'

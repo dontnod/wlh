@@ -21,7 +21,7 @@ export class Signal<THandler extends (...args: any) => void> {
    * Raise the signal, calling all attached handlers.
    * @param args The arguments to forward to all handlers.
    */
-  raise(args: Parameters<THandler>) {
+  raise(...args: Parameters<THandler>) {
     for(const handler of this._handlers) {
       handler(args)
     }

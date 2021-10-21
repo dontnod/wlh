@@ -5,10 +5,8 @@ c-input(:errors="errors" @change="onChange()")
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { computed } from 'vue'
-import { getCurrentResource } from '@dontnod/wlh'
-import { IResourceObject } from '../services/resource-object'
+import { defineComponent, computed, reactive } from 'vue'
+import { getCurrentResource, ObjectResource } from '@dontnod/wlh'
 
 export default defineComponent({
   props: {
@@ -23,14 +21,20 @@ export default defineComponent({
   },
   setup({ field, patch }) {
     let resource = getCurrentResource()
-    let errors = computed(() => resource.fieldsErrors[field])
+    let errors: string[] = reactive([])
+
+    resource.onError.attach((message: string, errorField: string) => {
+      if(field == errorField) {
+        errors.push(message)
+      }
+    })
 
     async function onChange() {
       if(!patch) {
         return
       }
       
-      const resourceObject = resource as unknown as IResourceObject
+      const resourceObject = resource as ObjectResource
       await resourceObject.save([field])
     }
     

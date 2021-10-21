@@ -1,5 +1,5 @@
 import { InjectionKey } from 'vue'
-import { Resource } from '../services/resource'
+import { Resource } from '../api/resource'
 import { inject } from 'vue'
 import { provide } from 'vue'
 

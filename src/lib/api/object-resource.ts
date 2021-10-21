@@ -12,12 +12,10 @@ export type FieldChangedHandler = (object: Resource, field: string, oldValue: an
 export class ObjectResource extends Resource {
   constructor(url: string, api: Api) {
     super(url, api)
-    this._loadTask = this._load()
+    this._loadTask = this.load()
   }
 
-  async get<T>(fieldName: string) {
-    // This allows to load only once if several calls to get are made concurrently.
-    await this._loadTask
+  get<T>(fieldName: string) {
     return this._data[fieldName]
   }
 
@@ -32,7 +30,7 @@ export class ObjectResource extends Resource {
     this._onFieldChanged.raise(this, fieldName, oldValue, newValue)
   }
 
-  async _load() {
+  async load() {
     const data = await this._get() as ApiObjectData | undefined
     if(data === undefined) {
       return
@@ -40,6 +38,12 @@ export class ObjectResource extends Resource {
 
     for(const fieldName in data) {
       this.set(fieldName, data[fieldName])
+    }
+
+    for(const oldFieldName in this._data) {
+      if(!(oldFieldName in data)) {
+        this.set(oldFieldName, undefined)
+      }
     }
   }
 
@@ -59,9 +63,7 @@ export class ObjectResource extends Resource {
     }
 
     await this._patch(dataToSave)
-    this._loadTask = this._load();
-
-    await this._loadTask
+    await this.load()
   }
 
   async delete() {
@@ -69,6 +71,5 @@ export class ObjectResource extends Resource {
   }
 
   private readonly _data: Record<string, any> = {}
-  private _loadTask: Promise<void>
   private _onFieldChanged = new Signal<FieldChangedHandler>()
 }

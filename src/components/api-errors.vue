@@ -4,6 +4,7 @@ div(class="control resource-errors" v-if="error") {{ error }}
 </template>
 
 <script lang="ts">
+import { onMounted } from '@vue/runtime-core'
 import { defineComponent, computed } from 'vue'
 import { getCurrentResource } from '../lib/api/current-resource'
 
@@ -11,10 +12,13 @@ export default defineComponent({
   props: {
   },
   setup() {
-    let resource = getCurrentResource()
-    let error = computed(() => resource.error)
+    let resourceHandle = getCurrentResource()
+    onMounted(async () => {
+      const resource = await resourceHandle
+      let error = computed(() => resource.onError)
+    })
     return {
-        error: error
+        error: undefined
     }
   },
 })

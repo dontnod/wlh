@@ -4,10 +4,10 @@
 import _ from 'lodash'
 
 /**
- * Signal class, allowing to be notified of events in a strongly-typed way.
+ * Base class for signals, allowing to be notified of events in a strongly-typed way.
  * @param THandler Type of the handler that can be attached to this signal.
  */
-export class Signal<THandler extends (...args: any) => void> {
+export abstract class SignalBase<THandler extends (...args: any) => any> {
 
   /**
    * Attach an handler to this signal, so it'll be called when the signal is raised.
@@ -21,11 +21,7 @@ export class Signal<THandler extends (...args: any) => void> {
    * Raise the signal, calling all attached handlers.
    * @param args The arguments to forward to all handlers.
    */
-  raise(...args: Parameters<THandler>) {
-    for(const handler of this._handlers) {
-      handler(args)
-    }
-  }
+  abstract raise(...args: Parameters<THandler>) : any
 
   /**
    * Detach a given handler.
@@ -35,5 +31,29 @@ export class Signal<THandler extends (...args: any) => void> {
     _.remove(this._handlers, handler) 
   }
 
-  private readonly _handlers: THandler[] = []
+  protected readonly _handlers: THandler[] = []
+}
+
+/**
+ * Signal class, allowing to be notified of events in a strongly-typed way.
+ * @param THandler Type of the handler that can be attached to this signal.
+ */
+export class Signal<THandler extends (...args: any) => void> extends SignalBase<THandler> {
+  raise(...args: Parameters<THandler>) {
+    for(const handler of this._handlers) {
+      handler(args)
+    }
+  }
+}
+
+/**
+ * Async signal, allowing to use asynchronous handlers.
+ * @param THandler Type of the handler that can be attached to this signal.
+ */
+export class AsyncSignal<THandler extends (...args: any) => Promise<void>> extends SignalBase<THandler> {
+  async raise(...args: Parameters<THandler>) : Promise<void> {
+    for(const handler of this._handlers) {
+      await handler(args)
+    }
+  }
 }

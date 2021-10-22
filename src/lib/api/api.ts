@@ -71,17 +71,22 @@ export class Api {
    * @param url The API endpoint the requested resource encapsulates.
    * @returns Created or existing resource object.
    */
-  get<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) : TResource {
+  async get<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) : Promise<TResource> {
+    let resource = null
     if(url in this._resources) {
       let resourceRef = this._resources[url]
-      let resource = resourceRef.deref()
+      resource = resourceRef.deref()
       if(resource) {
         return resource as TResource
       }
     }
 
-    let resource = new constructor(url, this) as TResource
-    this._resources[url] = new WeakRef(resource)
+    if(resource == null) {
+      resource = new constructor(url, this) as TResource
+      this._resources[url] = new WeakRef(resource)
+    }
+
+    await resource.load()
     return resource
   }
 
@@ -160,15 +165,4 @@ const ApiKey : InjectionKey<Api> = Symbol()
  */
 export function getApi() {
   return getService(ApiKey, Api)
-}
-
-/**
- * Get or create a resource object encapsulating the given endpoint.
- * @param constructor The resource constructor used to create the resource if it doesn't already exists
- * @param url The endpoint the given resource should encapsulate
- * @returns The created or existing resource
- */
-export function getResource<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) {
-  const api = getService(ApiKey, Api)
-  return api.get<TResource>(constructor, url)
 }

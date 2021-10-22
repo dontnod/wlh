@@ -7,6 +7,7 @@ c-input(:errors="errors" @change="onChange()")
 <script lang="ts">
 import { defineComponent, computed, reactive } from 'vue'
 import { getCurrentResource, ObjectResource } from '@dontnod/wlh'
+import { onMounted } from '@vue/runtime-core'
 
 export default defineComponent({
   props: {
@@ -20,16 +21,21 @@ export default defineComponent({
     }
   },
   setup({ field, patch }) {
-    let resource = getCurrentResource()
+    let resourceHandle = getCurrentResource()
     let errors: string[] = reactive([])
 
-    resource.onError.attach((message: string, errorField: string) => {
-      if(field == errorField) {
-        errors.push(message)
-      }
+    onMounted(async () => {
+      const resource = await resourceHandle
+
+      resource.onError.attach((message, errorField) => {
+        if(field == errorField) {
+          errors.push(message)
+        }
+      })
     })
 
     async function onChange() {
+      const resource = await resourceHandle
       if(!patch) {
         return
       }
@@ -40,7 +46,6 @@ export default defineComponent({
     
     return {
       onChange,
-      resource,
       errors: errors
     }
   },

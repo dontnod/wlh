@@ -3,23 +3,24 @@
  * The endpoint should allow get method, returning it's properties, and patch method, allowing
  * to modify the object.
  */
-import { Api, ApiData, ApiObjectData } from './api'
+import { Api, ApiObjectData } from './api'
 import { Resource } from './resource'
 import { ResourceConstructor } from './api'
-import { Signal } from '../common/signal'
-
-export type FieldChangedHandler = (object: Resource, field: string, oldValue: any, newValue: any) => void
+import { AsyncSignal } from '../common/signal'
 
 export class ObjectResource extends Resource {
   constructor(url: string, api: Api) {
     super(url, api)
   }
 
-  get<T>(fieldName: string) {
+  get onChanged() { return this._onChanged }
+
+  async get<T>(fieldName: string) {
+    await this.load()
     return this._data[fieldName]
   }
 
-  set<T>(fieldName: string, newValue: T) {
+  async set<T>(fieldName: string, newValue: T) {
     const oldValue = this._data[fieldName]
 
     if(oldValue == newValue) {
@@ -27,29 +28,22 @@ export class ObjectResource extends Resource {
     }
 
     this._data[fieldName] = newValue
-    this._onFieldChanged.raise(this, fieldName, oldValue, newValue)
+    await this._onChanged.raise(this)
   }
 
-  async getChild<T extends Resource>(constructor: ResourceConstructor<T>, fieldName: string) {
-    const url = this.get<string>(fieldName)
-    return this.api.get<T>(constructor, url)
+  async getChild<TChild extends Resource>(constructor: ResourceConstructor<TChild>, fieldName: string) {
+    const url = await this.get<string>(fieldName)
+    return await this.api.get<TChild>(constructor, url)
   }
 
-  async load() {
-    const data = await this._get() as ApiObjectData | undefined
+  async _load() {
+    let data = await this._get() as ApiObjectData | undefined
     if(data === undefined) {
-      return
+      data = {}
     }
 
-    for(const fieldName in data) {
-      this.set(fieldName, data[fieldName])
-    }
-
-    for(const oldFieldName in this._data) {
-      if(!(oldFieldName in data)) {
-        this.set(oldFieldName, undefined)
-      }
-    }
+    this._data = data
+    await this._onChanged.raise(this)
   }
 
   async save(fields: string[] | undefined = undefined) {
@@ -68,13 +62,13 @@ export class ObjectResource extends Resource {
     }
 
     await this._patch(dataToSave)
-    await this.load()
+    await this.load(true)
   }
 
   async delete() {
     await this._delete()
   }
 
-  private readonly _data: Record<string, any> = {}
-  private _onFieldChanged = new Signal<FieldChangedHandler>()
+  private _data: Record<string, any> = {}
+  private readonly _onChanged = new AsyncSignal<(object: ObjectResource) => Promise<void>>()
 }

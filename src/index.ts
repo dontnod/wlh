@@ -57,8 +57,15 @@ export default function install<T>(app: App<T>, options?: CkcOptions) {
   app.config.globalProperties.$mq = mediaQuery(options?.mqOptions)
 }
 
-export { Api, getResource, getApi } from './lib/api/api'
-export { Resource } from './lib/api/resource'
-export { ObjectResource } from './lib/api/object-resource'
-export { getCurrentResource } from './lib/api/current-resource'
+export {
+  Api,
+  ObjectResource,
+  Resource,
+  fieldRef,
+  getApi,
+  getCurrentResource, 
+  loadingGuardRef,
+  loadingRef,
+  resourceRef,
+} from './lib/api'
 export { getService } from './lib/common/service-manager'

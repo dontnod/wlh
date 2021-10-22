@@ -1,7 +1,7 @@
 <template lang="pug">
 //- This components injects a resource for child components (inputs, error feedback, loading feedback...) to access it.
 form
-  c-loading-overlay(:loading="resource.loading")
+  c-loading-overlay(:loading="loading")
     div(class="flex-column")
       slot
 </template>
@@ -15,11 +15,12 @@ export default defineComponent({
   props: {
     'resource': {
       required: true,
-      type: Object as PropType<Resource>
+      type: Object as PropType<Promise<Resource>>
     },
+    'loading': Boolean
   },
-  setup(props) {
-    setCurrentResource(props.resource)
+  setup({resource}) {
+    setCurrentResource(resource)
   },
 })
 </script>

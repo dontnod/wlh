@@ -8,11 +8,21 @@ export abstract class Resource {
   constructor(url: string, api: Api) {
     this._url = url
     this._api = api
+    this._loadTask = this._load()
   }
 
   public get onError() { return this._onError }
 
   protected get api() { return this._api }
+
+  async load(forceReload: boolean = false) : Promise<void> {
+    if(forceReload) {
+      this._loadTask = this._load()
+    }
+    await this._loadTask // Allows to call only once the _load method, except if forceReload is set to true.
+  }
+
+  protected abstract _load() : Promise<void>;
 
   protected async _get() : Promise<ApiData> {
     return await this._query('GET')
@@ -57,4 +67,5 @@ export abstract class Resource {
   private readonly _api: Api
   private readonly _onError = new Signal<ResourceErrorHandler>()
   private readonly _url: string
+  private _loadTask: Promise<void>
 }

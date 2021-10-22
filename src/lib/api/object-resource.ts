@@ -5,6 +5,7 @@
  */
 import { Api, ApiData, ApiObjectData } from './api'
 import { Resource } from './resource'
+import { ResourceConstructor } from './api'
 import { Signal } from '../common/signal'
 
 export type FieldChangedHandler = (object: Resource, field: string, oldValue: any, newValue: any) => void
@@ -12,7 +13,6 @@ export type FieldChangedHandler = (object: Resource, field: string, oldValue: an
 export class ObjectResource extends Resource {
   constructor(url: string, api: Api) {
     super(url, api)
-    this._loadTask = this.load()
   }
 
   get<T>(fieldName: string) {
@@ -28,6 +28,11 @@ export class ObjectResource extends Resource {
 
     this._data[fieldName] = newValue
     this._onFieldChanged.raise(this, fieldName, oldValue, newValue)
+  }
+
+  async getChild<T extends Resource>(constructor: ResourceConstructor<T>, fieldName: string) {
+    const url = this.get<string>(fieldName)
+    return this.api.get<T>(constructor, url)
   }
 
   async load() {

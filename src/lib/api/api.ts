@@ -170,5 +170,5 @@ export function getApi() {
  */
 export function getResource<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) {
   const api = getService(ApiKey, Api)
-  return api.get(constructor, url)
+  return api.get<TResource>(constructor, url)
 }

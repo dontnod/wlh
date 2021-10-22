@@ -6,7 +6,7 @@
 import { Api, ApiObjectData } from './api'
 import { Resource } from './resource'
 import { ResourceConstructor } from './api'
-import { AsyncSignal } from '../common/signal'
+import { Signal } from '../common/signal'
 
 export class ObjectResource extends Resource {
   constructor(url: string, api: Api) {
@@ -33,6 +33,9 @@ export class ObjectResource extends Resource {
 
   async getChild<TChild extends Resource>(constructor: ResourceConstructor<TChild>, fieldName: string) {
     const url = await this.get<string>(fieldName)
+    if(!url) {
+      return null
+    }
     return await this.api.get<TChild>(constructor, url)
   }
 
@@ -70,5 +73,5 @@ export class ObjectResource extends Resource {
   }
 
   private _data: Record<string, any> = {}
-  private readonly _onChanged = new AsyncSignal<(object: ObjectResource) => Promise<void>>()
+  private readonly _onChanged = new Signal<(object: ObjectResource) => void>()
 }

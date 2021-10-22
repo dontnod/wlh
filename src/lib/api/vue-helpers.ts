@@ -34,8 +34,8 @@ export function fieldRef<TObject extends ObjectResource, TField>(object: Promise
   onMounted(async () => {
     const resource = await object
     reference.value = await getter(resource)
-    resource.onChanged.attach(async () => {
-      reference.value = await getter(resource)
+    resource.onChanged.attach(() => {
+      getter(resource).then(value => reference.value = value)
     })
   })
 

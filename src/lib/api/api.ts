@@ -71,7 +71,10 @@ export class Api {
    * @param url The API endpoint the requested resource encapsulates.
    * @returns Created or existing resource object.
    */
-  async get<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) : Promise<TResource> {
+  get<TResource extends Resource>(
+    constructor: ResourceConstructor<TResource>,
+    url: string
+    ) : TResource {
     let resource = null
     if(url in this._resources) {
       let resourceRef = this._resources[url]
@@ -81,12 +84,8 @@ export class Api {
       }
     }
 
-    if(resource == null) {
-      resource = new constructor(url, this) as TResource
-      this._resources[url] = new WeakRef(resource)
-    }
-
-    await resource.load()
+    resource = new constructor(url, this) as TResource
+    this._resources[url] = new WeakRef(resource)
     return resource
   }
 

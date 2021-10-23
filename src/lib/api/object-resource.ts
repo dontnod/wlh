@@ -26,22 +26,24 @@ export class ObjectResource extends Resource {
     this.onChanged.raise(this)
   }
 
-  async getNested<TNested extends Resource>(constructor: ResourceConstructor<TNested>, fieldName: string) {
-    const url = await this.get<string>(fieldName)
+  getNested<TNested extends Resource>(constructor: ResourceConstructor<TNested>, fieldName: string) {
+    const url = this.get<string>(fieldName)
     if(!url) {
       return undefined
     }
-    return await this.api.get<TNested>(constructor, url)
+    return this.api.get<TNested>(constructor, url)
   }
 
   async _load() {
     let data = await this._get() as ApiObjectData | undefined
     if(data === undefined) {
       data = {}
+      return false
     }
 
     this._data = data
     await this.onChanged.raise(this)
+    return true
   }
 
   async save(fields: string[] | undefined = undefined) {

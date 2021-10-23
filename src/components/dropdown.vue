@@ -57,6 +57,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .dropdown {
+  z-index: 2;
   position: relative;
 
   & > header {

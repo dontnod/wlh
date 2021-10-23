@@ -4,7 +4,7 @@ div(class="dropdown" ref="dropdown")
     a(href="#" @click="toggle()")
       slot(name="header")
         c-icon(icon="chevron-down")
-  div( v-if="isOpen"  @mouseup="close()")
+  div( v-if="isOpen"  @click="close()")
     slot
 </template>
 

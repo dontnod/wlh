@@ -36,17 +36,14 @@ export default defineComponent({
       */
     })
 
-    async function onChange() {
-      const resource = await resourceHandle
+    const [_, onChange] = resourceHandle.do(async (resource) => {
       if(!patch) {
         return
       }
       
-      /*
       const resourceObject = resource as ObjectResource
       await resourceObject.save([field])
-      */
-    }
+    })
     
     return {
       onChange,

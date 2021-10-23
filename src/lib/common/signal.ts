@@ -28,20 +28,20 @@ export abstract class SignalBase<THandler extends (...args: any) => any> {
    * @param handler The handler to disconnect from the Signal.
    */
   detach(handler: THandler) {
-    _.remove(this._handlers, handler) 
+    this._handlers = this._handlers.filter(it => it != handler)
   }
 
-  protected readonly _handlers: THandler[] = []
+  protected _handlers: THandler[] = []
 }
 
 /**
  * Signal class, allowing to be notified of events in a strongly-typed way.
  * @param THandler Type of the handler that can be attached to this signal.
  */
-export class Signal<THandler extends (...args: any) => void> extends SignalBase<THandler> {
-  raise(...args: Parameters<THandler>) {
+export class Signal<THandler extends (...args: any) => void = () => void> extends SignalBase<THandler> {
+  raise(...args: Parameters<THandler>[]) {
     for(const handler of this._handlers) {
-      handler(args)
+      handler(...args)
     }
   }
 }
@@ -51,9 +51,9 @@ export class Signal<THandler extends (...args: any) => void> extends SignalBase<
  * @param THandler Type of the handler that can be attached to this signal.
  */
 export class AsyncSignal<THandler extends (...args: any) => Promise<void>> extends SignalBase<THandler> {
-  async raise(...args: Parameters<THandler>) : Promise<void> {
+  async raise(...args: Parameters<THandler>[]) : Promise<void> {
     for(const handler of this._handlers) {
-      await handler(args)
+      await handler(...args)
     }
   }
 }

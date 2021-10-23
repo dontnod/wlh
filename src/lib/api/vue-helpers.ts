@@ -3,7 +3,7 @@
  */
 import { ObjectResource } from './object-resource'
 import { Resource } from './resource'
-import { ref, Ref, onMounted } from 'vue'
+import { ref, Ref, onMounted, watch } from 'vue'
 
 /**
  * Create a ref that will be set to the resource retrieved by the given promise when the component is mounted.
@@ -28,15 +28,28 @@ export function resourceRef<TResource extends Resource>(resource: Promise<TResou
  * @param getter Getter to retrieve the value of the field
  * @returns A ref to the field value
  */
-export function fieldRef<TObject extends ObjectResource, TField>(object: Promise<TObject>, getter: (obj: TObject) => Promise<TField>) : Ref<TField> {
+export function fieldRef<TObject extends ObjectResource, TField>(
+  owner: Promise<TObject | undefined>,
+  getter: (owner: TObject) => TField,
+  setter: undefined | ((owner: TObject, value: TField) => void) = undefined
+  ) : Ref<TField> {
   const reference = ref<TField | undefined >(undefined) as Ref<TField>
 
   onMounted(async () => {
-    const resource = await object
+    const resource = await owner
+    if(!resource) {
+      return
+    }
     reference.value = await getter(resource)
     resource.onChanged.attach(() => {
-      getter(resource).then(value => reference.value = value)
+      reference.value = getter(resource)
     })
+
+    if(setter) {
+      watch(reference, () => {
+        setter(resource, reference.value)
+      })
+    }
   })
 
   return reference
@@ -76,7 +89,11 @@ export function loadingGuardRef(method: () => Promise<any>) : { loading: Ref<boo
 
 export async function childResource<TResource extends ObjectResource, TChild extends Resource>(
   owner: Promise<TResource>,
-  getter: (owner: TResource) => Promise<TChild>) : Promise<TChild> {
+  getter: (owner: TResource) => Promise<TChild | undefined>) : Promise<TChild | undefined> {
   const resource = await owner
-  return getter(resource) 
+  if(resource) {
+    return getter(resource) 
+  }
+
+  return undefined
 }

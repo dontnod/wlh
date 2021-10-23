@@ -15,12 +15,11 @@ export class ObjectResource extends Resource {
 
   get onChanged() { return this._onChanged }
 
-  async get<T>(fieldName: string) {
-    await this.load()
+  get<T>(fieldName: string) {
     return this._data[fieldName]
   }
 
-  async set<T>(fieldName: string, newValue: T) {
+  set<T>(fieldName: string, newValue: T) {
     const oldValue = this._data[fieldName]
 
     if(oldValue == newValue) {
@@ -28,13 +27,13 @@ export class ObjectResource extends Resource {
     }
 
     this._data[fieldName] = newValue
-    await this._onChanged.raise(this)
+    this._onChanged.raise(this)
   }
 
   async getChild<TChild extends Resource>(constructor: ResourceConstructor<TChild>, fieldName: string) {
     const url = await this.get<string>(fieldName)
     if(!url) {
-      return null
+      return undefined
     }
     return await this.api.get<TChild>(constructor, url)
   }

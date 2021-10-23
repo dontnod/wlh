@@ -15,7 +15,6 @@ export default defineComponent({
     let resourceHandle = getCurrentResource()
     onMounted(async () => {
       const resource = await resourceHandle
-      let error = computed(() => resource.onError)
     })
     return {
         error: undefined

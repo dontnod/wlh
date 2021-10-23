@@ -90,7 +90,7 @@ export class ResourceHandle<TResource extends Resource> {
    * @param getter The nested resource's getter method
    * @returns A ResourceHandle on the nested resource.
    */
-  nested<TNested extends Resource>(getter: Getter<TResource, TNested>): ResourceHandle<TNested> {
+  nested<TNested extends Resource>(getter: Getter<TResource, TNested | undefined>): ResourceHandle<TNested> {
     const getNested = () => {
       const resource = this._resource
       if(resource === undefined) {

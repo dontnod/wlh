@@ -9,7 +9,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
-    'type': Object as PropType<'submit' | 'reset' | 'button'>,
+    'type': String as PropType<'submit' | 'reset' | 'button'>,
   },
   setup() {
     

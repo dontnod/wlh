@@ -63,6 +63,7 @@ export {
   Resource,
   fieldRef,
   getApi,
+  childResource,
   getCurrentResource, 
   loadingGuardRef,
   loadingRef,

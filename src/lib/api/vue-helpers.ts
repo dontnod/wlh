@@ -72,3 +72,11 @@ export function loadingGuardRef(method: () => Promise<any>) : { loading: Ref<boo
   }
   return { loading, method: loadMethod }
 }
+
+
+export async function childResource<TResource extends ObjectResource, TChild extends Resource>(
+  owner: Promise<TResource>,
+  getter: (owner: TResource) => Promise<TChild>) : Promise<TChild> {
+  const resource = await owner
+  return getter(resource) 
+}

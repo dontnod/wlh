@@ -1,8 +1,8 @@
 /**
- * Contain Rest API related code.
+ * Layer on top of Axios to strongly type api requests and improve usage in component code.
  */
 export { Api, getApi } from './api'
 export { ObjectResource } from './object-resource'
 export { Resource } from './resource'
-export { fieldRef, loadingRef, loadingGuardRef, resourceRef, childResource } from './vue-helpers'
-export { getCurrentResource } from './current-resource'
+export { ResourceHandle } from './resource-handle'
+export { getCurrentResource, setCurrentResource } from './current-resource'

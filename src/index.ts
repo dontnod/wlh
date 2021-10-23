@@ -61,12 +61,8 @@ export {
   Api,
   ObjectResource,
   Resource,
-  fieldRef,
+  ResourceHandle,
   getApi,
-  childResource,
   getCurrentResource, 
-  loadingGuardRef,
-  loadingRef,
-  resourceRef,
 } from './lib/api'
 export { getService } from './lib/common/service-manager'

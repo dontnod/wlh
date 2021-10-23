@@ -3,6 +3,7 @@ import { Method } from 'axios'
 import { Signal } from '../common/signal'
 
 export type ResourceErrorHandler = (message: string, field: string | undefined) => void
+export type ChangedHandler = (objet: Resource) => void
 
 export abstract class Resource {
   constructor(url: string, api: Api) {
@@ -11,9 +12,12 @@ export abstract class Resource {
     this._loadTask = this._load()
   }
 
-  public get onError() { return this._onError }
+  get onError() { return this._onError }
+  get onChanged() { return this._onChanged }
 
   protected get api() { return this._api }
+
+
 
   async load(forceReload: boolean = false) : Promise<void> {
     if(forceReload) {
@@ -66,6 +70,7 @@ export abstract class Resource {
 
   private readonly _api: Api
   private readonly _onError = new Signal<ResourceErrorHandler>()
+  private readonly _onChanged = new Signal<ChangedHandler>()
   private readonly _url: string
   private _loadTask: Promise<void>
 }

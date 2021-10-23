@@ -3,17 +3,13 @@
  * The endpoint should allow get method, returning it's properties, and patch method, allowing
  * to modify the object.
  */
-import { Api, ApiObjectData } from './api'
+import { Api, ApiObjectData, ResourceConstructor } from './api'
 import { Resource } from './resource'
-import { ResourceConstructor } from './api'
-import { Signal } from '../common/signal'
 
 export class ObjectResource extends Resource {
   constructor(url: string, api: Api) {
     super(url, api)
   }
-
-  get onChanged() { return this._onChanged }
 
   get<T>(fieldName: string) {
     return this._data[fieldName]
@@ -27,15 +23,15 @@ export class ObjectResource extends Resource {
     }
 
     this._data[fieldName] = newValue
-    this._onChanged.raise(this)
+    this.onChanged.raise(this)
   }
 
-  async getChild<TChild extends Resource>(constructor: ResourceConstructor<TChild>, fieldName: string) {
+  async getNested<TNested extends Resource>(constructor: ResourceConstructor<TNested>, fieldName: string) {
     const url = await this.get<string>(fieldName)
     if(!url) {
       return undefined
     }
-    return await this.api.get<TChild>(constructor, url)
+    return await this.api.get<TNested>(constructor, url)
   }
 
   async _load() {
@@ -45,7 +41,7 @@ export class ObjectResource extends Resource {
     }
 
     this._data = data
-    await this._onChanged.raise(this)
+    await this.onChanged.raise(this)
   }
 
   async save(fields: string[] | undefined = undefined) {
@@ -72,5 +68,4 @@ export class ObjectResource extends Resource {
   }
 
   private _data: Record<string, any> = {}
-  private readonly _onChanged = new Signal<(object: ObjectResource) => void>()
 }

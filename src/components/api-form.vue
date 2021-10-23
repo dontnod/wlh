@@ -8,14 +8,13 @@ form
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { Resource } from '../lib/api/resource'
-import { setCurrentResource } from '../lib/api/current-resource'
+import { ResourceHandle, Resource, setCurrentResource } from '../lib/api';
 
 export default defineComponent({
   props: {
     'resource': {
       required: true,
-      type: Object as PropType<Promise<Resource>>
+      type: Object as PropType<ResourceHandle<Resource>>
     },
     'loading': Boolean
   },

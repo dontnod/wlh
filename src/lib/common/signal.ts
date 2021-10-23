@@ -38,8 +38,8 @@ export abstract class SignalBase<THandler extends (...args: any) => any> {
  * Signal class, allowing to be notified of events in a strongly-typed way.
  * @param THandler Type of the handler that can be attached to this signal.
  */
-export class Signal<THandler extends (...args: any) => void = () => void> extends SignalBase<THandler> {
-  raise(...args: Parameters<THandler>[]) {
+export class Signal<THandler extends (...args: any[]) => void = () => void> extends SignalBase<THandler> {
+  raise(...args: Parameters<THandler>) {
     for(const handler of this._handlers) {
       handler(...args)
     }
@@ -50,8 +50,8 @@ export class Signal<THandler extends (...args: any) => void = () => void> extend
  * Async signal, allowing to use asynchronous handlers.
  * @param THandler Type of the handler that can be attached to this signal.
  */
-export class AsyncSignal<THandler extends (...args: any) => Promise<void>> extends SignalBase<THandler> {
-  async raise(...args: Parameters<THandler>[]) : Promise<void> {
+export class AsyncSignal<THandler extends (...args: any[]) => Promise<void>> extends SignalBase<THandler> {
+  async raise(...args: Parameters<THandler>) : Promise<void> {
     for(const handler of this._handlers) {
       await handler(...args)
     }

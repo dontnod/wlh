@@ -1,9 +1,11 @@
 /**
  * Handle to an API Resource usable in vue Components
  */
-import { Resource } from './resource'
+import { Resource, ChangedHandler } from './resource'
+import { Signal } from '../common/signal'
 import { ref, Ref, onMounted, watch } from 'vue'
 import { getApi, ResourceConstructor } from './api'
+import { Api } from '.'
 
 type FieldGetter<TResource extends Resource, TField> = (owner: TResource) => TField
 type FieldSetter<TResource extends Resource, TField> = (owner: TResource, value: TField) => void
@@ -27,34 +29,16 @@ export class ResourceHandle<TResource extends Resource> {
   static get<TResource extends Resource>(constructor: ResourceConstructor<TResource>, url: string) {
     const api = getApi()
     const resource = api.get(constructor, url)
-    return new ResourceHandle(resource)
+    return new ResourceHandle(() => api.get(constructor, url))
   }
 
   /**
    * Create a ref to a boolean indicating the loading status of the proxied resource.
    * @returns A ref to a boolean that'll be true until the proxied resource is loaded 
    */
-  loading() : Ref<boolean> {
-    let reference = ref(true)
-    onMounted(async () => {
-      await this._resource
-      reference.value = false
-    })
-    return reference
-  }
+  get loading() { return this._loading }
 
-  /**
-   * Create a ref to a boolean indicating the resource was successfully loaded.
-   * @returns The created ref
-   */
-  available(): Ref<boolean> {
-    let reference = ref(false)
-    onMounted(async () => {
-      const resource = await this._resource
-      reference.value = !!resource
-    })
-    return reference
-  }
+  get available() { return this._available}
 
   /**
    * Create a ref that will be synchronized with a field of a resource
@@ -69,14 +53,27 @@ export class ResourceHandle<TResource extends Resource> {
     const reference = ref(undefined) as Ref<TField | undefined>
 
     onMounted(async () => {
-      const resource = await this.resource
+      const resource = this._resource.value
       if(!resource) {
         return
       }
 
       reference.value = getter(resource)
-      resource.onChanged.attach(() => {
+      const refresh = () => reference.value = getter(resource)
+
+      resource.onChanged.attach(refresh)
+
+      watch(this._resource, (value, oldValue) => {
+        if(oldValue != undefined) {
+          oldValue.onChanged.detach(refresh)
+        }
+
+        if(value != undefined) {
+          value.onChanged.attach(refresh)
+        }
+
         reference.value = getter(resource)
+        
       })
 
       if(setter != undefined) {
@@ -98,7 +95,7 @@ export class ResourceHandle<TResource extends Resource> {
    */
   nested<TNested extends Resource>(getter: NestedGetter<TResource, TNested>): ResourceHandle<TNested> {
     const getNested = async () => {
-      const resource = await this._resource
+      const resource = this._resource.value
       if(resource === undefined) {
         return undefined
       }
@@ -107,7 +104,9 @@ export class ResourceHandle<TResource extends Resource> {
       return await nested
     }
 
-    return new ResourceHandle(getNested())
+    const handle = new ResourceHandle(getNested)
+    this._onChange.attach(() => handle._refresh())
+    return handle
   }
 
   /**
@@ -118,7 +117,7 @@ export class ResourceHandle<TResource extends Resource> {
   do<TReturn>(method: (resource: TResource) => Promise<TReturn>) : [ Ref<boolean>, () => Promise<TReturn | undefined> ] {
     const loading = ref(false)
     const loadMethod = async () => {
-      const resource = await this._resource
+      const resource = this._resource.value
       if(resource === undefined) {
         return
       }
@@ -134,9 +133,37 @@ export class ResourceHandle<TResource extends Resource> {
 
   protected get resource() { return this._resource }
 
-  private constructor(resource: Promise<TResource | undefined>) {
-    this._resource = resource
+  private constructor(resourceFactory: () => Promise<TResource | undefined>) {
+    this._resourceFactory = resourceFactory
+    onMounted(async () => {
+      await this._refresh()
+    })
   }
 
-  private readonly _resource: Promise<TResource | undefined>
+  private async _refresh() {
+    let resource = this._resource.value
+    if(resource != null) {
+      resource.onChanged.detach((resource) => this._onResourceChange(resource))
+    }
+
+    this._loading.value = true
+    this._resource.value = await this._resourceFactory()
+    this._loading.value = false
+    this._available.value = !!this._resource.value
+
+    resource = this._resource.value
+    if(resource != null) {
+      resource.onChanged.attach((resource) => this._onResourceChange(resource))
+    }
+  }
+
+  private _onResourceChange(resource: Resource) {
+    this._onChange.raise(resource)
+  }
+
+  private readonly _resourceFactory: () => Promise<TResource | undefined>
+  private _resource: Ref<TResource | undefined> = ref(undefined)
+  private _loading: Ref<boolean> = ref(true)
+  private _available: Ref<boolean> = ref(false)
+  private readonly _onChange = new Signal<ChangedHandler>()
 }

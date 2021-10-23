@@ -25,6 +25,7 @@ export default defineComponent({
     let errors: string[] = reactive([])
 
     onMounted(async () => {
+      /*
       const resource = await resourceHandle
 
       resource.onError.attach((message, errorField) => {
@@ -32,6 +33,7 @@ export default defineComponent({
           errors.push(message)
         }
       })
+      */
     })
 
     async function onChange() {
@@ -40,8 +42,10 @@ export default defineComponent({
         return
       }
       
+      /*
       const resourceObject = resource as ObjectResource
       await resourceObject.save([field])
+      */
     }
     
     return {

@@ -6,3 +6,4 @@ export { ObjectResource } from './object-resource'
 export { Resource } from './resource'
 export { ResourceHandle } from './resource-handle'
 export { getCurrentResource, setCurrentResource } from './current-resource'
+

@@ -63,6 +63,7 @@ export {
   Resource,
   ResourceHandle,
   getApi,
+  childResource,
   getCurrentResource, 
 } from './lib/api'
 export { getService } from './lib/common/service-manager'

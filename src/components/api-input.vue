@@ -1,6 +1,6 @@
 <template lang="pug">
 //- This components injects a resource for child components (inputs, error feedback, loading feedback...) to access it.
-c-input(:errors="errors" @change="onChange()")
+c-input(:errors="errors")
   slot
 </template>
 
@@ -36,6 +36,7 @@ export default defineComponent({
       */
     })
 
+    /*
     const [_, onChange] = resourceHandle.do(async (resource) => {
       if(!patch) {
         return
@@ -44,9 +45,9 @@ export default defineComponent({
       const resourceObject = resource as ObjectResource
       await resourceObject.save([field])
     })
+    */
     
     return {
-      onChange,
       errors: errors
     }
   },

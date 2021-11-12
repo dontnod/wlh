@@ -25,6 +25,6 @@ class ServiceManager {
 const ServiceManagerInstance = new ServiceManager()
 
 
-export function getService<TService extends Object>(key: InjectionKey<TService>, constructor: ServiceConstructor<TService>) {
+export function useService<TService extends Object>(key: InjectionKey<TService>, constructor: ServiceConstructor<TService>) {
   return ServiceManagerInstance.get(key, constructor)
 }

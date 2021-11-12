@@ -66,4 +66,4 @@ export {
   getCurrentResource, 
 } from './lib/api'
 
-export { getService } from './lib/common/service-manager'
+export { useService } from './lib/common/service-manager'

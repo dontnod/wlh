@@ -14,7 +14,7 @@ class ServiceManager {
       return service as TService
     }
 
-    let service = reactive(new constructor()) as TService
+    let service = new constructor() as TService
     this._services[key as any] = service
     return service
   }

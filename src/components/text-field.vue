@@ -4,6 +4,7 @@ div(class="text-field")
     placeholder=" "
     :type="password ? 'password' : 'text'"
     :value="modelValue"
+    :disabled="isDisabled"
     @input="valueChanged($event)"
   )
   div(class="text-field-placeholder")
@@ -20,6 +21,7 @@ export default defineComponent({
     placeholder: String,
     modelValue: String,
     password: Boolean,
+    isDisabled: Boolean,
   },
   emits: ['update:modelValue'],
   setup(_, { emit }) {

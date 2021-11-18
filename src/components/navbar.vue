@@ -1,5 +1,5 @@
 <template lang="pug">
-div(class="navbar" v-bind:class="{'small': !$mq('sm'), 'primary': !secondary, 'secondary': secondary}")
+div(class="navbar" v-bind:class="{ 'primary': !secondary, 'secondary': secondary}")
   div(class="brand")
     slot(name="brand")
   div(class="menu" ref="menu")
@@ -70,52 +70,18 @@ export default defineComponent({
   align-items: stretch;
   z-index: 10;
 
-  > div {
+  div {
     align-items: center;
     display: flex;
   }
 
-  > .brand {
+  .brand {
     flex-grow: 0;
     margin-left: var(--spacing);
     margin-right: var(--spacing);
   }
 
-  &.small {
-    > .brand {
-      flex-grow: 1;
-      order: 1;
-    }
-
-    > .menu {
-      flex-direction: column;
-      flex-grow: 0;
-
-      > a {
-        display: inline;
-      }
-
-      > .links {
-        background: var(--context);
-        flex-direction: column;
-        left: 0;
-        display: none;
-        padding: calc(0.5 * var(--spacing));
-        position: absolute;
-        top: 3rem;
-
-        &.opened {
-          display: flex;
-        }
-      }
-    }
-
-    > .end {
-      order: 2;
-    }
-  }
-
-  > .menu {
+  .menu {
     display: flex;
     flex-grow: 1;
 
@@ -123,7 +89,7 @@ export default defineComponent({
       display: none;
     }
 
-    > .links {
+    .links {
       display: flex;
     }
 
@@ -147,6 +113,40 @@ export default defineComponent({
     flex-grow: 0;
     margin-left: var(--spacing);
     margin-right: var(--spacing);
+  }
+
+  @media screen and (max-width: 768.5px) {
+    .brand {
+      flex-grow: 1;
+      order: 1;
+    }
+
+    .menu {
+      flex-direction: column;
+      flex-grow: 0;
+
+      > a {
+        display: inline;
+      }
+
+      > .links {
+        background: var(--context);
+        flex-direction: column;
+        left: 0;
+        display: none;
+        padding: calc(0.5 * var(--spacing));
+        position: absolute;
+        top: 3rem;
+
+        &.opened {
+          display: flex;
+        }
+      }
+    }
+
+    .end {
+      order: 2;
+    }
   }
 }
 </style>

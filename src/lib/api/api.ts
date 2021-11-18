@@ -8,7 +8,7 @@ import { AxiosInstance, Method } from 'axios'
 import { InjectionKey } from 'vue'
 import { Resource } from './resource'
 import { Signal } from '../common/signal'
-import { getService } from '../common/service-manager'
+import { useService } from '../common/service-manager'
 
 const _AUTH_TOKEN_STORAGE_KEY = 'wlh_auth_token'
 const _AUTHORIZATION_HEADER_KEY = 'Authorization'
@@ -163,5 +163,5 @@ const ApiKey : InjectionKey<Api> = Symbol()
  * @returns The Api.
  */
 export function getApi() {
-  return getService(ApiKey, Api)
+  return useService(ApiKey, Api)
 }

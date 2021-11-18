@@ -14,7 +14,7 @@ class ServiceManager {
       return service as TService
     }
 
-    let service = reactive(new constructor()) as TService
+    let service = new constructor() as TService
     this._services[key as any] = service
     return service
   }
@@ -25,6 +25,6 @@ class ServiceManager {
 const ServiceManagerInstance = new ServiceManager()
 
 
-export function getService<TService extends Object>(key: InjectionKey<TService>, constructor: ServiceConstructor<TService>) {
+export function useService<TService extends Object>(key: InjectionKey<TService>, constructor: ServiceConstructor<TService>) {
   return ServiceManagerInstance.get(key, constructor)
 }

@@ -1,23 +1,31 @@
-<template lang="pug">
-//- This components injects a resource for child components (inputs, error feedback, loading feedback...) to access it.
-div(class="control resource-errors" v-if="error") {{ error }}
+<template>
+<!-- This components injects a operation for child components (inputs, error feedback,
+loading feedback...) to access it. -->
+<div class="control resource-errors" v-if="hasErrors">
+  <div v-for="message in errors" :key="message">{{ message }}</div>
+</div>
 </template>
 
 <script lang="ts">
-import { onMounted } from '@vue/runtime-core'
 import { defineComponent, computed } from 'vue'
-import { getCurrentResource } from '../lib/api/current-resource'
+import { getCurrentOperation } from './api-form.vue'
 
 export default defineComponent({
   props: {
   },
   setup() {
-    let resourceHandle = getCurrentResource()
-    onMounted(async () => {
-      const resource = await resourceHandle
-    })
+    const { error } = getCurrentOperation()
+    function* getErrors() {
+      if(error.value) {
+        for(const it of error.value.graphQLErrors) {
+          yield it.message
+        }
+      }
+    }
+
     return {
-        error: undefined
+        errors: computed(() => [...getErrors()]),
+        hasErrors: computed(() => !!error.value)
     }
   },
 })

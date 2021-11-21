@@ -27,6 +27,7 @@ export default defineComponent({
 
 <style lang="scss">
 .router-link {
+  align-items: center;
   > svg {
     margin-right: var(--spacing);
   }

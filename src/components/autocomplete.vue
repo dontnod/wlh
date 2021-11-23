@@ -2,7 +2,7 @@
 div(class="autocomplete" :class="{fullfilled: modelValue}")
   div(v-if="modelValue" class="display-chip")
     slot(name="item" :item="modelValue")
-      p {{item}}
+      p {{ modelValue }}
     c-icon(@click="removeValue()" icon="times-circle")
   input(
     v-show="!modelValue"

@@ -43,7 +43,7 @@ export default function install<T>(app: App<T>, options?: WkcOptions) {
     .component('WListbox', WListbox)
     .component('WLoadingOverlay', WLoadingOverlay)
     .component('WModal', WModal)
-    .component('WNavBar', WNavbar)
+    .component('WNavbar', WNavbar)
     .component('WRouterLink', WRouterLink)
     .component('WScreenCenter', WScreenCenter)
     .component('WSpinner', WSpinner)

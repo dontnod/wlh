@@ -55,7 +55,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .dropdown {
   z-index: 2;
   position: relative;
@@ -65,6 +65,21 @@ export default defineComponent({
   }
 
   & > div {
+    & > * {
+      display: block;
+      margin-bottom: calc(0.5 * var(--spacing));
+      margin-top: calc(0.5 * var(--spacing));
+    }
+
+    & > *:first-child {
+      margin-top: 0;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+
+    flex-direction: column;
     background: var(--context);
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
@@ -72,6 +87,7 @@ export default defineComponent({
     padding: var(--spacing);
     position: absolute;
     right: 0;
+
   }
 }
 </style>

@@ -1,7 +1,7 @@
 import { App } from 'vue'
 
 import './assets/styles/_index.scss'
-import './lib/ui/font-awesome'
+import './lib/font-awesome'
 import CApiErrors from './components/api-errors.vue'
 import CApiForm from './components/api-form.vue'
 import CApiInput from './components/api-input.vue'
@@ -21,7 +21,7 @@ import CTextField from './components/text-field.vue'
 import CChips from './components/chips.vue'
 import CAutocomplete from './components/autocomplete.vue'
 import CModal from './components/modal.vue'
-import { MediaQueryOptions } from './lib/ui/media-query'
+import { MediaQueryOptions } from './lib/media-query'
 
 export interface CkcOptions {
   mqOptions?: MediaQueryOptions
@@ -50,13 +50,4 @@ export default function install<T>(app: App<T>, options?: CkcOptions) {
     .component('CModal', CModal)
 }
 
-export {
-  Api,
-  ObjectResource,
-  Resource,
-  ResourceHandle,
-  getApi,
-  getCurrentResource, 
-} from './lib/api'
-
-export { useService } from './lib/common/service-manager'
+export { useService } from './lib/service-manager'

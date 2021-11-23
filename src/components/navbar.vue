@@ -70,7 +70,7 @@ export default defineComponent({
   align-items: stretch;
   z-index: 10;
 
-  div {
+  > div {
     align-items: center;
     display: flex;
   }

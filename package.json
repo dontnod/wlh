@@ -11,6 +11,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@urql/vue": "^0.6.0",
     "axios": "^0.21.1",
     "include-media": "^1.4.10",
     "lodash": "^4.17.21",

@@ -5,9 +5,7 @@ c-input(:errors="errors")
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive } from 'vue'
-import { getCurrentResource, ObjectResource } from '@dontnod/wlh'
-import { onMounted } from '@vue/runtime-core'
+import { defineComponent, reactive } from 'vue'
 
 export default defineComponent({
   props: {
@@ -21,32 +19,8 @@ export default defineComponent({
     }
   },
   setup({ field, patch }) {
-    let resourceHandle = getCurrentResource()
     let errors: string[] = reactive([])
 
-    onMounted(async () => {
-      /*
-      const resource = await resourceHandle
-
-      resource.onError.attach((message, errorField) => {
-        if(field == errorField) {
-          errors.push(message)
-        }
-      })
-      */
-    })
-
-    /*
-    const [_, onChange] = resourceHandle.do(async (resource) => {
-      if(!patch) {
-        return
-      }
-      
-      const resourceObject = resource as ObjectResource
-      await resourceObject.save([field])
-    })
-    */
-    
     return {
       errors: errors
     }

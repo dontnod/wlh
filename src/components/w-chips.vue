@@ -1,31 +1,32 @@
 <template lang="pug">
-div(class="autocomplete" :class="{fullfilled: modelValue}")
-  div(v-if="modelValue" class="display-chip")
-    slot(name="item" :item="modelValue")
-      p {{ modelValue }}
-    c-icon(@click="removeValue()" icon="times-circle")
+div(class="chips" )
+  div(v-show="modelValue" v-for="item in values" class="display-chip")
+    slot(name="chip" :item="item")
+      p {{item}}
+    w-icon(@click="removeValue(item)" icon="times-circle")
   input(
-    v-show="!modelValue"
     type="text"
     :placeholder="placeholder"
     v-model="filterText"
     size=1
     :disabled="isDisabled"
+
   )
   div(v-show="filteredList" class="dropdown")
     div(v-for="item in filteredList" @mousedown="setValue(item)")
-      slot(name="item" :item="item" )
+      slot(name="list-item" :item="item" )
         p {{item}}
   div(v-show="!filteredList" class="dropdown")
     p - no result - 
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, reactive, toRefs, Ref } from 'vue'
+import { computed, defineComponent, PropType, toRefs, Ref } from 'vue'
 import { ref } from 'vue'
 
 export default defineComponent({
   props: {
+    isDisabled: Boolean,
     placeholder: { type: String, default: 'Search...' },
     options: Object as PropType<Object[]>,
     filter: {
@@ -34,26 +35,29 @@ export default defineComponent({
         item?.toString().toLowerCase().includes(searchString),
     },
     modelValue: {
-      type: Object as PropType<any | undefined>,
-      default: undefined,
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false,
+      type: Object as PropType<any[]>,
+      default: [],
     },
   },
 
   setup(props, { emit }) {
-    const { options, filter, modelValue } = toRefs(props)
+    const { modelValue } = props
+    const { options, filter } = toRefs(props)
 
     const filterText = ref('')
+    const values: Ref<any[]> = ref([])
 
     const setValue = (item: any) => {
-      emit('update:modelValue', item)
+      const alreadyExist: boolean = values.value.includes(item)
+      if (!alreadyExist) {
+        values.value = [...values.value, item]
+        emit('update:modelValue', values.value)
+      }
     }
 
-    const removeValue = () => {
-      emit('update:modelValue', undefined)
+    const removeValue = (value: any) => {
+      values.value = values.value.filter((it) => it != value)
+      emit('update:modelValue', values.value)
     }
 
     let filteredList = computed(() => {
@@ -66,6 +70,7 @@ export default defineComponent({
       filterText,
       filteredList,
       setValue,
+      values,
       modelValue,
       removeValue,
     }
@@ -74,31 +79,27 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.autocomplete {
+.chips {
   background: var(--secondary-light);
   padding: 0.5rem;
   border-radius: 0.3rem;
   position: relative;
   display: flex;
-  flex-grow: 2;
-  outline: 1px solid var(--secondary-light);
-  transition: var(--transition-duration) outline;
-  &.fullfilled {
-    outline: 1px solid var(--validation);
-  }
-
   .display-chip {
+    border-radius: 50rem;
+    background: rgba(white, 0.1);
     margin-left: 0.2rem;
     padding-left: 0.5rem;
+    font-size: 0.8rem;
     font-weight: 400;
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    width: max-content;
+
     svg {
       cursor: pointer;
-      width: 1.5rem;
+      width: 1.2rem;
       margin: 0 0.2rem;
-      color: rgba(white, 0.3);
+      color: rgba(white, 0.1);
 
       &:hover {
         color: rgba(white, 0.5);
@@ -145,7 +146,6 @@ export default defineComponent({
   input:focus ~ .dropdown {
     display: inline;
   }
-
   input ~ .dropdown:not(focus) {
     display: none;
   }

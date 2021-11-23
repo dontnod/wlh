@@ -2,8 +2,8 @@
 //- This components injects a resource for child components (inputs, error feedback, loading feedback...) to access it.
 div(v-bind:class="{'loading-overlay': true, 'loading': loading}")
   div(id='background')
-  c-screen-center
-    c-spinner(id='spinner')
+  w-screen-center
+    w-spinner(id='spinner')
   div
     slot
 </template>

@@ -1,14 +1,13 @@
-<template>
-<!-- This components injects a operation for child components (inputs, error feedback,
-loading feedback...) to access it. -->
-<div class="control resource-errors" v-if="hasErrors">
-  <div v-for="message in errors" :key="message">{{ message }}</div>
-</div>
+<template lang="pug">
+//This components injects a operation for child components (inputs, error feedback,
+//loading feedback...) to access it.
+div(class="control resource-errors" v-if="hasErrors")
+  div(v-for="message in errors" :key="message") {{ message }}
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
-import { getCurrentOperation } from './api-form.vue'
+import { getCurrentOperation } from './w-api-form.vue'
 
 export default defineComponent({
   props: {

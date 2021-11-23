@@ -1,6 +1,6 @@
 <template lang="pug">
 //- This components injects a resource for child components (inputs, error feedback, loading feedback...) to access it.
-c-input(:errors="errors")
+w-input(:errors="errors")
   slot
 </template>
 

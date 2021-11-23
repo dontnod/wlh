@@ -4,7 +4,7 @@ div(class="navbar" v-bind:class="{ 'primary': !secondary, 'secondary': secondary
     slot(name="brand")
   div(class="menu" ref="menu")
     a(href="#" @click="toggle()")
-      c-icon(icon="bars")
+      w-icon(icon="bars")
     div(class="links" @mouseup="close()" v-bind:class="{ 'opened': isOpen }")
       slot
   div(class="end")

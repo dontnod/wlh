@@ -3,7 +3,7 @@ div(class="dropdown" ref="dropdown")
   header
     a(href="#" @click="toggle()")
       slot(name="header")
-        c-icon(icon="chevron-down")
+        w-icon(icon="chevron-down")
   div( v-if="isOpen"  @click="close()")
     slot
 </template>

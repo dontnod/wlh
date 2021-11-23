@@ -7,7 +7,7 @@ import WApiForm from './components/w-api-form.vue'
 import WApiInput from './components/w-api-input.vue'
 import WButton from './components/w-button.vue'
 import WComponent from './components/w-component.vue'
-import WDropdown from './components/w/dropdown.vue'
+import WDropdown from './components/w-dropdown.vue'
 import WGroupbox from './components/w-groupbox.vue'
 import WIcon from './components/w-icon.vue'
 import WListbox from './components/w-listbox.vue'
@@ -29,25 +29,25 @@ export interface WkcOptions {
 
 export default function install<T>(app: App<T>, options?: WkcOptions) {
   app
-    .component(WApiErrors)
-    .component(WApiForm)
-    .component(WApiInput)
-    .component(WButton)
-    .component(WComponent)
-    .component(WDropdown)
-    .component(WGroupbox)
-    .component(WIcon)
-    .component(WInput)
-    .component(WListbox)
-    .component(WLoadingOverlay)
-    .component(WNavbar)
-    .component(WRouterLink)
-    .component(WScreenCenter)
-    .component(WSpinner)
-    .component(WTextField)
-    .component(WChips)
-    .component(WAutocomplete)
-    .component(WModal)
+    .component('WApiErrors', WApiErrors)
+    .component('WApiForm', WApiForm)
+    .component('WApiInput', WApiInput)
+    .component('WButton', WButton)
+    .component('WComponent', WComponent)
+    .component('WDropdown', WDropdown)
+    .component('WGroupBox', WGroupbox)
+    .component('WIcon', WIcon)
+    .component('WInput', WInput)
+    .component('WListbox', WListbox)
+    .component('WLoadingOverlay', WLoadingOverlay)
+    .component('WNavBar', WNavbar)
+    .component('WRouterLink', WRouterLink)
+    .component('WScreenCenter', WScreenCenter)
+    .component('WSpinner', WSpinner)
+    .component('WTextField', WTextField)
+    .component('WChips', WChips)
+    .component('WAutocomplete', WAutocomplete)
+    .component('WModal', WModal)
 }
 
 export { useService } from './lib/service-manager'

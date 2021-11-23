@@ -3,7 +3,7 @@ div(class="chips" )
   div(v-show="modelValue" v-for="item in values" class="display-chip")
     slot(name="chip" :item="item")
       p {{item}}
-    c-icon(@click="removeValue(item)" icon="times-circle")
+    w-icon(@click="removeValue(item)" icon="times-circle")
   input(
     type="text"
     :placeholder="placeholder"

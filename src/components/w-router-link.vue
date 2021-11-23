@@ -1,7 +1,7 @@
 <template lang="pug">
 router-link(:to="to" class="router-link")
   div(class="router-link flex-row")
-    c-icon(:icon="icon")
+    w-icon(:icon="icon")
     slot
 </template>
 

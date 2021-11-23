@@ -1,10 +1,6 @@
-<template>
-  <svg width="24" height="24"
-    xmlns="http://www.w3.org/2000/svg"
-    :viewBox="`0 0 ${width} ${height}`"
-  >
-    <path fill="currentColor" :d="svgPath" />
-  </svg>
+<template lang="pug">
+svg(width="24" height="24" xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${width} ${height}`")
+  path(fill="currentColor" :d="svgPath")
 </template>
 
 <script lang="ts">
